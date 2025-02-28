@@ -1,6 +1,7 @@
 import os
 import cv2
 
+
 def count_video_files(directory):
     # 统计目录下的视频文件总数
     total_count = 0
