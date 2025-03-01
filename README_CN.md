@@ -25,5 +25,5 @@
 1. 克隆仓库：
 
 ```bash
-git clone https://github.com/yourusername/video-resolution-rename.git
+git clone https://github.com/zhuatuyu/video-resolution-rename.git
 cd video-resolution-rename

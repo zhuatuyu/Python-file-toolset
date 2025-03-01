@@ -25,5 +25,5 @@ English | [简体中文](README_CN.md)
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/video-resolution-rename.git
+git clone https://github.com/zhuatuyu/video-resolution-rename.git
 cd video-resolution-rename
