@@ -27,3 +27,10 @@ English | [简体中文](README_CN.md)
 ```bash
 git clone https://github.com/zhuatuyu/video-resolution-rename.git
 cd video-resolution-rename
+```
+
+## 功能模块
+
+1. `video_rename.py`: 视频文件批量重命名工具，自动添加分辨率信息
+2. `video_subtitle.py`: 视频字幕生成工具，支持多语言识别和翻译
+3. `video_screenshot.py`: 视频截图工具
