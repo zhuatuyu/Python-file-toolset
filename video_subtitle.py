@@ -74,38 +74,49 @@ def generate_subtitle(video_path):
         
         # 加载 Whisper 模型（首次运行会下载模型）
         print("加载语音识别模型...")
-        model = whisper.load_model("medium")
+        model = whisper.load_model("small")
         
         # 识别视频语音
         print("正在识别视频语音...")
         result = model.transcribe(video_path)
         
-        # 检测语言，如果不是中文则翻译
-        if result["language"] != "zh":
-            print(f"检测到语言: {result['language']}, 正在翻译为中文...")
+        # 获取基本文件名（不含扩展名）
+        base_name = os.path.splitext(video_path)[0]
+        
+        # 保存原始语言字幕
+        original_lang = result["language"]
+        original_srt_path = f"{base_name}.{original_lang}.srt"
+        
+        print(f"保存原始{original_lang}语言字幕: {original_srt_path}")
+        with open(original_srt_path, "w", encoding="utf-8") as f:
+            f.write(create_srt_content(result["segments"]))
+        
+        # 如果不是中文，则翻译并保存中文字幕
+        if original_lang != "zh":
+            print(f"检测到语言: {original_lang}, 正在翻译为中文...")
+            
+            # 复制一份结果用于翻译
+            translated_segments = result["segments"].copy()
             
             # 翻译每个片段
-            for segment in result["segments"]:
+            for segment in translated_segments:
                 try:
                     translated = translate_text(segment["text"], 
-                                              source_lang=result["language"], 
+                                              source_lang=original_lang, 
                                               target_lang='zh')
                     if translated:
                         segment["text"] = translated
                 except Exception as e:
                     print(f"翻译片段失败，保留原文: {str(e)}")
+            
+            # 生成并保存中文字幕
+            zh_srt_path = f"{base_name}.zh.srt"
+            print(f"保存中文翻译字幕: {zh_srt_path}")
+            
+            with open(zh_srt_path, "w", encoding="utf-8") as f:
+                f.write(create_srt_content(translated_segments))
         
-        # 生成 SRT 文件
-        srt_content = create_srt_content(result["segments"])
-        
-        # 保存 SRT 文件
-        base_name = os.path.splitext(video_path)[0]
-        srt_path = f"{base_name}.srt"
-        
-        with open(srt_path, "w", encoding="utf-8") as f:
-            f.write(srt_content)
-        
-        print(f"字幕文件已保存: {srt_path}")
+        print(f"字幕文件处理完成")
         return True
         
     except Exception as e:
